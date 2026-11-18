@@ -1,5 +1,6 @@
+
 name: Pipeline Gestion des tâches
-# Commentaire
+
 on:
   push:
     branches: ["main"]
@@ -10,13 +11,13 @@ permissions:
 
 env:
   NOM_IMAGE: gestion-taches
-  TAG_IMAGE: 1.${{ github.run_number }} 
+  TAG_IMAGE: 1.${{ github.run_number }}
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Checkout Code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Installer Python
@@ -29,10 +30,10 @@ jobs:
       - name: Installer les dépendances
         run: pip install -r requirements-dev.txt
 
-      - name: 2. Vérification du projet (tests)
+      - name: Vérification du projet (tests)
         run: pytest
 
-      - name: 3. Docker Build
+      - name: Docker Build
         run: docker build -t ${{ env.NOM_IMAGE }}:${{ env.TAG_IMAGE }} .
 
   push:
@@ -68,13 +69,18 @@ jobs:
           if ($ancien) { docker rm -f gestion-taches }
           docker run -d --name gestion-taches -p 8080:3000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.NOM_IMAGE }}:${{ env.TAG_IMAGE }}
 
-      - name: 3. Vérification (test HTTP)
+      - name: Vérification (test HTTP)
         run: |
           for ($i = 1; $i -le 10; $i++) {
             try {
               $r = Invoke-WebRequest -Uri http://localhost:8080/health -UseBasicParsing
-              if ($r.StatusCode -eq 200) { Write-Host "Application accessible : OK"; exit 0 }
-            } catch { Start-Sleep -Seconds 3 }
+              if ($r.StatusCode -eq 200) {
+                Write-Host "Application accessible : OK"
+                exit 0
+              }
+            } catch {
+              Start-Sleep -Seconds 3
+            }
           }
           Write-Host "L'application ne répond pas"
           exit 1
