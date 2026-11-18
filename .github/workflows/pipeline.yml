@@ -3,17 +3,16 @@ name: Pipeline Gestion des tâches
 on:
   push:
     branches: ["main"]
-  workflow_dispatch:       
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 env:
   NOM_IMAGE: gestion-taches
-  TAG_IMAGE: 1.${{ github.run_number }}    
+  TAG_IMAGE: 1.${{ github.run_number }}
 
 jobs:
-
   ci:
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +35,8 @@ jobs:
       - name: 3. Docker Build
         run: docker build -t ${{ env.NOM_IMAGE }}:${{ env.TAG_IMAGE }} .
 
-  needs: ci                
+  push:
+    needs: ci
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -57,7 +57,7 @@ jobs:
 
   deploy:
     needs: push
-    runs-on: [self-hosted, windows]   
+    runs-on: [self-hosted, windows]
     steps:
       - name: Télécharger la nouvelle image
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.NOM_IMAGE }}:${{ env.TAG_IMAGE }}
