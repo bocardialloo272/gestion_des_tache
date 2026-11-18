@@ -1,5 +1,5 @@
 name: Pipeline Gestion des tâches
-
+# Commentaire
 on:
   push:
     branches: ["main"]
@@ -10,7 +10,7 @@ permissions:
 
 env:
   NOM_IMAGE: gestion-taches
-  TAG_IMAGE: 1.${{ github.run_number }}
+  TAG_IMAGE: 1.${{ github.run_number }} 
 
 jobs:
   ci:
