@@ -35,7 +35,7 @@ def ajouter():
     tache = {"id": prochain_id, "titre": titre, "terminee": False}
     prochain_id += 1
     taches.append(tache)
-    return jsonify(tache), 500 #201
+    return jsonify(tache), 201
 
 
 # Terminer / rouvrir une tâche
